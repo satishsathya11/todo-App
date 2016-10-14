@@ -23221,31 +23221,14 @@
 	  value: 'something',
 	  todos: []
 	};
-	var todo = function todo() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-	  var action = arguments[1];
-
-	  switch (action.type) {
-
-	    case 'TOGGLE_TODO':
-	      if (state.id !== action.id) {
-	        return state;
-	      }
-
-	      return Object.assign({}, state, {
-	        completed: !state.completed
-	      });
-
-	    default:
-	      return state;
-	  }
-	};
 
 	var todos = function todos() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
 	  var newTodos = Object.assign([], state.todos);
+	  debugger;
+	  console.log(newTodos);
 	  switch (action.type) {
 	    case 'ADD_TODO':
 	      newTodos.push({
@@ -23296,7 +23279,6 @@
 	      return state;
 	  }
 	};
-
 	exports.default = visibilityFilter;
 
 /***/ },
@@ -23401,9 +23383,9 @@
 
 	var _actions = __webpack_require__(206);
 
-	var _Link = __webpack_require__(207);
+	var _react = __webpack_require__(1);
 
-	var _Link2 = _interopRequireDefault(_Link);
+	var _react2 = _interopRequireDefault(_react);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23412,6 +23394,8 @@
 	    active: ownProps.filter === state.visibilityFilter
 	  };
 	};
+	//import Link from '../components/Link'
+
 
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 	  return {
@@ -23421,7 +23405,38 @@
 	  };
 	};
 
-	var FilterLink = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Link2.default);
+	var Link = function Link(_ref) {
+	  var active = _ref.active;
+	  var children = _ref.children;
+	  var _onClick = _ref.onClick;
+
+	  if (active) {
+	    return _react2.default.createElement(
+	      'span',
+	      null,
+	      children
+	    );
+	  }
+
+	  return _react2.default.createElement(
+	    'a',
+	    { href: '#',
+	      onClick: function onClick(e) {
+	        e.preventDefault();
+	        _onClick();
+	      }
+	    },
+	    children
+	  );
+	};
+
+	Link.propTypes = {
+	  active: _react.PropTypes.bool.isRequired,
+	  children: _react.PropTypes.node.isRequired,
+	  onClick: _react.PropTypes.func.isRequired
+	};
+
+	var FilterLink = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Link);
 
 	exports.default = FilterLink;
 
@@ -23458,55 +23473,7 @@
 	};
 
 /***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Link = function Link(_ref) {
-	  var active = _ref.active;
-	  var children = _ref.children;
-	  var _onClick = _ref.onClick;
-
-	  if (active) {
-	    return _react2.default.createElement(
-	      "span",
-	      null,
-	      children
-	    );
-	  }
-
-	  return _react2.default.createElement(
-	    "a",
-	    { href: "#",
-	      onClick: function onClick(e) {
-	        e.preventDefault();
-	        _onClick();
-	      }
-	    },
-	    children
-	  );
-	};
-
-	Link.propTypes = {
-	  active: _react.PropTypes.bool.isRequired,
-	  children: _react.PropTypes.node.isRequired,
-	  onClick: _react.PropTypes.func.isRequired
-	};
-
-	exports.default = Link;
-
-/***/ },
+/* 207 */,
 /* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -23602,6 +23569,7 @@
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 	  return {
 	    addTodo: function addTodo(val) {
+	      debugger;
 	      dispatch((0, _actions.addTodo)(val));
 	    }
 	  };
@@ -23619,67 +23587,19 @@
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	//import TodoList from '../components/TodoList'
+
+
 	var _reactRedux = __webpack_require__(172);
 
 	var _actions = __webpack_require__(206);
-
-	var _TodoList = __webpack_require__(210);
-
-	var _TodoList2 = _interopRequireDefault(_TodoList);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var getVisibleTodos = function getVisibleTodos(todos, filter) {
-	  switch (filter) {
-	    case 'SHOW_ALL':
-	      return todos;
-	    case 'SHOW_COMPLETED':
-	      return todos.filter(function (t) {
-	        return t.completed;
-	      });
-	    case 'SHOW_ACTIVE':
-	      return todos.filter(function (t) {
-	        return !t.completed;
-	      });
-	  }
-	};
-
-	var mapStateToProps = function mapStateToProps(state) {
-	  console.log(state);
-	  return {
-	    todos: getVisibleTodos(state.todos.todos, state.visibilityFilter)
-	  };
-	};
-
-	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {
-	    onTodoClick: function onTodoClick(id) {
-	      dispatch((0, _actions.toggleTodo)(id));
-	    }
-	  };
-	};
-
-	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_TodoList2.default);
-
-	exports.default = VisibleTodoList;
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Todo = __webpack_require__(211);
+	var _Todo = __webpack_require__(210);
 
 	var _Todo2 = _interopRequireDefault(_Todo);
 
@@ -23712,10 +23632,42 @@
 	  onTodoClick: _react.PropTypes.func.isRequired
 	};
 
-	exports.default = TodoList;
+	var getVisibleTodos = function getVisibleTodos(todos, filter) {
+	  switch (filter) {
+	    case 'SHOW_ALL':
+	      return todos;
+	    case 'SHOW_COMPLETED':
+	      return todos.filter(function (t) {
+	        return t.completed;
+	      });
+	    case 'SHOW_ACTIVE':
+	      return todos.filter(function (t) {
+	        return !t.completed;
+	      });
+	  }
+	};
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  console.log(state);
+	  return {
+	    todos: getVisibleTodos(state.todos.todos, state.visibilityFilter)
+	  };
+	};
+
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    onTodoClick: function onTodoClick(id) {
+	      dispatch((0, _actions.toggleTodo)(id));
+	    }
+	  };
+	};
+
+	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(TodoList);
+
+	exports.default = VisibleTodoList;
 
 /***/ },
-/* 211 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

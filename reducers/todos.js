@@ -3,8 +3,10 @@ const initialState = {
   todos: []
 }
 
-const todos = (state = initialState, action) => {
+const todos = (state = initialState, action) => { 
   let newTodos = Object.assign([], state.todos);
+  debugger;
+  console.log(newTodos);
   switch (action.type) {
     case 'ADD_TODO':
       newTodos.push({

@@ -1,6 +1,29 @@
 import { connect } from 'react-redux'
 import { toggleTodo } from '../actions'
-import TodoList from '../components/TodoList'
+//import TodoList from '../components/TodoList'
+import React, { PropTypes } from 'react'
+import Todo from '../components/Todo'
+
+const TodoList = ({ todos, onTodoClick }) => (
+  <ul>
+    {todos.map(todo =>
+      <Todo
+        key={todo.id}
+        {...todo}
+        onClick={() => onTodoClick(todo.id)}
+      />
+    )}
+  </ul>
+)
+
+TodoList.propTypes = {
+  todos: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    completed: PropTypes.bool.isRequired,
+    text: PropTypes.string.isRequired
+  }).isRequired).isRequired,
+  onTodoClick: PropTypes.func.isRequired
+}
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
