@@ -23217,20 +23217,16 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
+	var initialState = {
+	  value: 'something',
+	  todos: []
+	};
 	var todo = function todo() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case 'ADD_TODO':
-	      return {
-	        id: action.id,
-	        text: action.text,
-	        completed: false
-	      };
+
 	    case 'TOGGLE_TODO':
 	      if (state.id !== action.id) {
 	        return state;
@@ -23246,15 +23242,32 @@
 	};
 
 	var todos = function todos() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
+	  var newTodos = Object.assign([], state.todos);
 	  switch (action.type) {
 	    case 'ADD_TODO':
-	      return [].concat(_toConsumableArray(state), [todo(undefined, action)]);
+	      newTodos.push({
+	        id: action.id,
+	        text: action.text,
+	        completed: false
+	      });
+	      return Object.assign({}, state, {
+	        todos: newTodos
+	      });
 	    case 'TOGGLE_TODO':
-	      return state.map(function (t) {
-	        return todo(t, action);
+	      newTodos = newTodos.map(function (t) {
+	        if (t.id !== action.id) {
+	          return t;
+	        }
+	        return Object.assign({}, t, {
+	          completed: !t.completed
+	        });
+	      });
+	      console.log(newTodos);
+	      return Object.assign({}, state, {
+	        todos: newTodos
 	      });
 	    default:
 	      return state;
@@ -23503,6 +23516,8 @@
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -23513,38 +23528,86 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var AddTodo = function AddTodo(_ref) {
-	  var dispatch = _ref.dispatch;
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	  var input = void 0;
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement(
-	      'form',
-	      { onSubmit: function onSubmit(e) {
-	          e.preventDefault();
-	          if (!input.value.trim()) {
-	            return;
-	          }
-	          dispatch((0, _actions.addTodo)(input.value));
-	          input.value = '';
-	        } },
-	      _react2.default.createElement('input', { ref: function ref(node) {
-	          input = node;
-	        } }),
-	      _react2.default.createElement(
-	        'button',
-	        { type: 'submit' },
-	        'Add Todo'
-	      )
-	    )
-	  );
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var AddTodo = function (_React$Component) {
+	  _inherits(AddTodo, _React$Component);
+
+	  function AddTodo(props) {
+	    _classCallCheck(this, AddTodo);
+
+	    var _this = _possibleConstructorReturn(this, (AddTodo.__proto__ || Object.getPrototypeOf(AddTodo)).call(this, props));
+
+	    _this.state = {
+	      value: ''
+	    };
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    console.log(props);
+	    return _this;
+	  }
+
+	  _createClass(AddTodo, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      console.log(this.props);
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(e) {
+	      e.preventDefault();
+	      this.props.addTodo(this.state.value);
+	      this.setState({
+	        value: ''
+	      });
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      this.setState({
+	        value: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          _react2.default.createElement('input', { value: this.state.value, onChange: this.handleChange }),
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'submit' },
+	            'Add Todo'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return AddTodo;
+	}(_react2.default.Component);
+
+	var mapStateToProps = function mapStateToProps(state, ownProps) {
+	  return {};
 	};
-	AddTodo = (0, _reactRedux.connect)()(AddTodo);
 
-	exports.default = AddTodo;
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+	  return {
+	    addTodo: function addTodo(val) {
+	      dispatch((0, _actions.addTodo)(val));
+	    }
+	  };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(AddTodo);
 
 /***/ },
 /* 209 */
@@ -23582,8 +23645,9 @@
 	};
 
 	var mapStateToProps = function mapStateToProps(state) {
+	  console.log(state);
 	  return {
-	    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+	    todos: getVisibleTodos(state.todos.todos, state.visibilityFilter)
 	  };
 	};
 
