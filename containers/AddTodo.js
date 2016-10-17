@@ -49,7 +49,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addTodo: (val) => {
-      debugger;
       dispatch(addTodo(val))
     }
   }
